@@ -1,5 +1,5 @@
-project_id = "my-project-113346"
-service_account = "my-project@my-project-113346.iam.gserviceaccount.com"
-region = "europe-west3"
-main_zone = "europe-west3-b"
+project_id = "disco-math-377010"
+service_account = "903596479778-compute@developer.gserviceaccount.com"
+region = "us-central1"
+main_zone = "us-central1"
 cluster_node_zones = ["europe-west3-b"]
