@@ -1,5 +1,5 @@
 project_id = "disco-math-377010"
-service_account = "903596479778-compute@developer.gserviceaccount.com"
+service_account = "iac-464@disco-math-377010.iam.gserviceaccount.com"
 region = "us-central1"
-main_zone = "us-central1"
-cluster_node_zones = ["europe-west3-b"]
+main_zone = "us-central1a"
+cluster_node_zones = ["us-central1a"]

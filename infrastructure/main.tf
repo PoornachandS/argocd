@@ -59,3 +59,9 @@ module "bastion" {
   network_name = module.google_networks.network.name
   subnet_name  = module.google_networks.subnet.name
 }
+
+module "application" {
+  source = "./application"
+
+  project_id   = var.project_id  
+}
