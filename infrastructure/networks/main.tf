@@ -51,3 +51,11 @@ resource "google_compute_router_nat" "nat_router" {
     filter = "ERRORS_ONLY"
   }
 }
+
+resource "google_compute_address" "ingress_ip" {
+  name         = "flask"
+  subnetwork   = google_compute_subnetwork.subnet.id
+  address_type = "EXTERNAL"
+  region       = "us-central1"
+  address      = "34.160.179.142"
+}
