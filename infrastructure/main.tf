@@ -20,7 +20,8 @@ provider "google-beta" {
 
 resource "google_project_service" "project_service" {
     for_each = toset([
-        "iap.googleapis.com"
+        "iap.googleapis.com",
+        "firestore.googleapis.com"
     ])
   project = var.project_id
   service = each.value
