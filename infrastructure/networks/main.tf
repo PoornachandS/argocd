@@ -54,7 +54,7 @@ resource "google_compute_router_nat" "nat_router" {
 
 resource "google_compute_address" "ingress_ip" {
   name         = "flask"
-  subnetwork   = google_compute_subnetwork.subnet.id
+  subnetwork   = google_compute_subnetwork.subnet.name
   address_type = "EXTERNAL"
   region       = "us-central1"
   address      = "34.160.179.142"
