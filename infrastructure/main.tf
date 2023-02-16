@@ -48,6 +48,23 @@ module "google_kubernetes_cluster" {
   authorized_ipv4_cidr_block = "${module.bastion.ip}/32"
 }
 
+module "gke" {
+  source                     = "terraform-google-modules/kubernetes-engine/google//modules/beta-autopilot-private-cluster"
+  project_id                 = var.project_id
+  name                       = "app-cluster"
+  region                     = var.region
+  zones                      = var.cluster_node_zones
+  network                    = module.google_networks.network.name
+  subnetwork                 = module.google_networks.subnet.name
+  ip_range_pods              = module.google_networks.cluster_pods_ip_cidr_range
+  ip_range_services          = module.google_networks.cluster_services_ip_cidr_range
+  horizontal_pod_autoscaling = true
+  filestore_csi_driver       = false
+  enable_private_endpoint    = true
+  enable_private_nodes       = true
+  master_ipv4_cidr_block     = module.google_networks.cluster_master_ip_cidr_range
+}
+
 module "bastion" {
   source = "./bastion"
 
