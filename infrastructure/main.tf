@@ -44,7 +44,6 @@ module "gke" {
   ip_range_pods              = module.google_networks.cluster_pods_ip_cidr_range
   ip_range_services          = module.google_networks.cluster_services_ip_cidr_range
   horizontal_pod_autoscaling = true
-  filestore_csi_driver       = false
   enable_private_endpoint    = true
   enable_private_nodes       = true
   master_ipv4_cidr_block     = module.google_networks.cluster_master_ip_cidr_range
