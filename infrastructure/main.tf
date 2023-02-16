@@ -42,8 +42,6 @@ module "gke" {
   zones                      = var.cluster_node_zones
   network                    = module.google_networks.network.name
   subnetwork                 = module.google_networks.subnet.name
-  ip_range_pods              = module.google_networks.cluster_pods_ip_cidr_range
-  ip_range_services          = module.google_networks.cluster_services_ip_cidr_range
   horizontal_pod_autoscaling = true
   enable_private_endpoint    = true
   enable_private_nodes       = true
