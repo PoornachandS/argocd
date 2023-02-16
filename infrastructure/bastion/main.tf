@@ -46,7 +46,7 @@ resource "google_compute_instance" "bastion" {
   }
 
   // Install tinyproxy on startup.
-  metadata_startup_script = file("${path.module}/template/start-up-script.sh")
+  metadata_startup_script = file("${path.module}/template/startupscript.sh")
 
   network_interface {
     subnetwork = var.subnet_name
