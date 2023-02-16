@@ -65,4 +65,4 @@ resource "google_compute_instance" "bastion" {
     email  = google_service_account.bastion.email
     scopes = ["cloud-platform"]
   }
-
+}
