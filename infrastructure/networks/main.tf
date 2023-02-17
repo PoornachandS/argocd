@@ -2,8 +2,8 @@ locals {
   network_name                   = "kubernetes-cluster"
   subnet_name                    = "${google_compute_network.vpc.name}--subnet"
   cluster_master_ip_cidr_range   = "10.100.100.0/28"
-  cluster_pods_ip_cidr_range     = "10.101.0.0/16"
-  cluster_services_ip_cidr_range = "10.102.0.0/16"
+  cluster_pods_ip_cidr_range     = "cluster-pods-ip"
+  cluster_services_ip_cidr_range = "cluster-services-ip"
 }
 
 resource "google_compute_network" "vpc" {
@@ -19,6 +19,13 @@ resource "google_compute_subnetwork" "subnet" {
   region                   = var.region
   network                  = google_compute_network.vpc.name
   private_ip_google_access = true
+  dynamic "secondary_ip_range" {
+    for_each = var.secondary_ip_ranges
+    content {
+      range_name    = secondary_ip_range.key
+      ip_cidr_range = secondary_ip_range.value
+    }
+  }
 }
 
 resource "google_compute_route" "egress_internet" {
@@ -54,8 +61,6 @@ resource "google_compute_router_nat" "nat_router" {
 
 resource "google_compute_address" "ingress_ip" {
   name         = "flask"
-  subnetwork   = google_compute_subnetwork.subnet.name
   address_type = "EXTERNAL"
   region       = "us-central1"
-  address      = "34.160.179.142"
 }

@@ -10,10 +10,12 @@ resource "google_pubsub_subscription" "flaskl" {
   topic   = google_pubsub_topic.flask.name
 }
 
+/*
 resource "google_firestore_database" "datastore_mode_database" {
   provider = "google-beta"
   project = var.project_id
-  name = "(default)"
-  location_id = "eur3"
+  name    = "(default)"
+  location_id = "nam5"
   type        = "FIRESTORE_NATIVE"
 }
+*/
