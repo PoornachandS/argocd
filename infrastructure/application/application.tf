@@ -1,5 +1,5 @@
 resource "google_pubsub_topic" "flask" {
-  name = "flask-pub-sub"
+  name = "flask"
   project = var.project_id
   message_retention_duration = "86600s"
 }

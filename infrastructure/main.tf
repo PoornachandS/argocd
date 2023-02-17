@@ -19,6 +19,14 @@ provider "google" {
 provider "google-beta" {
 }
 
+data "google_client_config" "default" {}
+
+provider "kubernetes" {
+  host                   = "https://${module.gke.endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(module.gke.ca_certificate)
+}
+
 resource "google_project_service" "project_service" {
     for_each = toset([
         "iap.googleapis.com",
@@ -65,6 +73,14 @@ module "gke" {
   depends_on = [
     google_project_service.project_service
   ]
+}
+
+module "my-app-workload-identity" {
+  source     = "terraform-google-modules/kubernetes-engine/google//modules/workload-identity"
+  name       = "my-application-name"
+  namespace  = "flask-pub-sub"
+  project_id = var.project_id
+  roles      = ["roles/datastore.owner", "roles/pubsub.publisher"]
 }
 
 module "bastion" {
