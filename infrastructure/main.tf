@@ -3,8 +3,12 @@ terraform {
 	google = {
 	  source = "hashicorp/google"
 	}
-  google-beta = {
+    google-beta = {
       source = "hashicorp/google-beta"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.11.0"
     }
   }
   required_version = ">= 0.13"
@@ -77,7 +81,7 @@ module "gke" {
 
 module "my-app-workload-identity" {
   source     = "terraform-google-modules/kubernetes-engine/google//modules/workload-identity"
-  name       = "my-application-name"
+  name       = "flask-pub-sub-svc"
   namespace  = "flask-pub-sub"
   project_id = var.project_id
   roles      = ["roles/datastore.owner", "roles/pubsub.publisher"]

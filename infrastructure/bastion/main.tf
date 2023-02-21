@@ -8,6 +8,16 @@ resource "google_service_account" "bastion" {
   display_name = "GKE Bastion Service Account"
 }
 
+resource "google_project_iam_member" "proxy-sa-bindng" {
+  for_each = toset([
+    "roles/container.clusterAdmin",
+    "roles/eventarc.serviceAgent", ##container.namespaces.create
+  ])
+  project = var.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.bastion.email}"
+}
+
 // Allow access to the Bastion Host via SSH.
 resource "google_compute_firewall" "bastion-ssh" {
   name          = format("%s-bastion-ssh", var.bastion_name)
@@ -23,6 +33,7 @@ resource "google_compute_firewall" "bastion-ssh" {
 
   target_tags = ["bastion"]
 }
+
 
 
 // The Bastion host.
