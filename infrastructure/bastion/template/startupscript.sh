@@ -28,14 +28,14 @@ curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 gcloud container clusters get-credentials app-cluster --zone=us-central1
 
-# #kubec
+# #kubec 
 # 1. Install Argo CD¶
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 
 # # To access argocd UI we portforward
-kubectl port-forward -n argocd svc argocd-server 8080:443
+kubectl port-forward -n argocd services/argocd-server 8080:443
 
 ########################################################################
 ##################################################################

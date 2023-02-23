@@ -11,7 +11,9 @@ resource "google_service_account" "bastion" {
 resource "google_project_iam_member" "proxy-sa-bindng" {
   for_each = toset([
     "roles/container.clusterAdmin",
-    "roles/eventarc.serviceAgent", ##container.namespaces.create
+    "roles/eventarc.serviceAgent",
+    "roles/container.developer",
+    "roles/gameservices.serviceAgent",
   ])
   project = var.project_id
   role    = each.value
@@ -56,8 +58,10 @@ resource "google_compute_instance" "bastion" {
     enable_integrity_monitoring = true
   }
 
+
   // Install tinyproxy on startup.
   metadata_startup_script = file("${path.module}/template/startupscript.sh")
+
 
   network_interface {
     subnetwork = var.subnet_name

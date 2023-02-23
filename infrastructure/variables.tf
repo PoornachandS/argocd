@@ -23,3 +23,9 @@ variable "service_account" {
   type = string
   description = "The GCP service account"
 }
+
+variable "workload_manager_iam_roles" {
+  type = any
+  description = "workload manager sa roles"
+  default = ["roles/datastore.owner", "roles/pubsub.publisher", "roles/artifactregistry.writer", "roles/pubsub.subscriber"]
+}

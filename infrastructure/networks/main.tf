@@ -59,8 +59,6 @@ resource "google_compute_router_nat" "nat_router" {
   }
 }
 
-resource "google_compute_address" "ingress_ip" {
-  name         = "flask"
-  address_type = "EXTERNAL"
-  region       = "us-central1"
+resource "google_compute_global_address" "ingress_ip" {
+  name = "flask"
 }

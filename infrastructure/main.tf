@@ -6,10 +6,12 @@ terraform {
     google-beta = {
       source = "hashicorp/google-beta"
     }
+    /*
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = ">= 2.11.0"
+      version = "2.12.1"
     }
+    */
   }
   required_version = ">= 0.13"
 }
@@ -23,13 +25,23 @@ provider "google" {
 provider "google-beta" {
 }
 
+/*
 data "google_client_config" "default" {}
+
 
 provider "kubernetes" {
   host                   = "https://${module.gke.endpoint}"
   token                  = data.google_client_config.default.access_token
   cluster_ca_certificate = base64decode(module.gke.ca_certificate)
 }
+
+provider "kubernetes" {
+  host                   = "https://${module.gke.endpoint}"
+  client_certificate     = base64decode(module.gke.client_certificate)
+  client_key             = base64decode(module.gke.client_key)
+  cluster_ca_certificate = base64decode(module.gke.ca_certificate)
+}
+*/
 
 resource "google_project_service" "project_service" {
     for_each = toset([
@@ -38,6 +50,7 @@ resource "google_project_service" "project_service" {
         "compute.googleapis.com",
         "pubsub.googleapis.com",
         "container.googleapis.com",
+        "certificatemanager.googleapis.com",
     ])
   project = var.project_id
   service = each.value
@@ -53,6 +66,25 @@ module "google_networks" {
   ]
 }
 
+// Dedicated service account for the Bastion instance.
+resource "google_service_account" "gke_sa" {
+  account_id   = "gke-sa"
+  display_name = "GKE Bastion Service Account"
+}
+
+resource "google_project_iam_member" "gke-sa-bindng" {
+  for_each = toset([
+    "roles/artifactregistry.writer",
+    "roles/logging.logWriter",
+    "roles/monitoring.metricWriter",
+    "roles/monitoring.viewer",
+    "roles/stackdriver.resourceMetadata.writer",
+  ])
+  project = var.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.gke_sa.email}"
+}
+
 module "gke" {
   source                     = "terraform-google-modules/kubernetes-engine/google//modules/beta-autopilot-private-cluster"
   project_id                 = var.project_id
@@ -63,6 +95,7 @@ module "gke" {
   subnetwork                 = module.google_networks.subnet.name
   ip_range_pods              = module.google_networks.cluster_pods_ip_cidr_range
   ip_range_services          = module.google_networks.cluster_services_ip_cidr_range
+  service_account            = google_service_account.gke_sa.email
   enable_vertical_pod_autoscaling = true
   horizontal_pod_autoscaling = true
   enable_private_endpoint    = true
@@ -79,6 +112,7 @@ module "gke" {
   ]
 }
 
+/*
 module "my-app-workload-identity" {
   source     = "terraform-google-modules/kubernetes-engine/google//modules/workload-identity"
   name       = "flask-pub-sub-svc"
@@ -86,6 +120,41 @@ module "my-app-workload-identity" {
   project_id = var.project_id
   roles      = ["roles/datastore.owner", "roles/pubsub.publisher"]
 }
+*/
+
+resource "google_service_account" "workload_manager_sa" {
+  project = var.project_id
+  account_id   = "flask-pub-sub"
+  display_name = "Manager Service Account (GKE Workload Identity)."
+}
+
+resource "google_project_iam_member" "workload_manager_sa" {
+  for_each = toset(var.workload_manager_iam_roles)
+  project  = var.project_id
+  role   = each.value
+  member = "serviceAccount:${google_service_account.workload_manager_sa.email}"
+}
+
+# Allow Qpod manager [GKE Workload Identity] to use workload manager SA
+resource "google_service_account_iam_member" "workload-manager-iam" {
+  service_account_id = google_service_account.workload_manager_sa.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[flask-pub-sub/flask-pub-sub-svc]"
+}
+
+/*
+resource "kubectl_manifest" "workload_manager_sa" {
+  yaml_body = <<-EOF
+  apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+        iam.gke.io/gcp-service-account: ${google_service_account.workload_manager_sa.email}
+    name: flask-pub-sub-svc
+    namespace: flask-pub-sub
+  EOF
+}
+*/
 
 module "bastion" {
   source = "./bastion"
