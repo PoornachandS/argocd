@@ -6,6 +6,6 @@ metadata:
 spec:
   defaultBackend:
     service:
-      name: flask-pub-sub
+      name: argocd-server
       port:
         number: 80
