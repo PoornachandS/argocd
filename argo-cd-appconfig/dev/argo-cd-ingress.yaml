@@ -1,0 +1,11 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-argocd
+  namespace: argocd
+spec:
+  defaultBackend:
+    service:
+      name: flask-pub-sub
+      port:
+        number: 80
