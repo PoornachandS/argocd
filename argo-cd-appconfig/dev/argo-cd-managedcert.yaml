@@ -1,0 +1,22 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: managed-cert-argo
+  namespace: argo
+spec:
+  domains:
+    - argo.poorna.braveokafor.com
+    - www.argo.poorna.braveokafor.com
+
+---
+
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: https-redirect-argo
+  namespace: argo
+spec:
+  redirectToHttps:
+    enabled: true
+    responseCodeName: MOVED_PERMANENTLY_DEFAULT
+
