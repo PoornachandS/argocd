@@ -62,3 +62,7 @@ resource "google_compute_router_nat" "nat_router" {
 resource "google_compute_global_address" "ingress_ip" {
   name = "flask"
 }
+
+resource "google_compute_global_address" "argo_ip" {
+  name = "argo"
+}
