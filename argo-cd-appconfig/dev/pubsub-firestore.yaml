@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: flask-pubsub
+  name: pubsub-firestore
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: 'git@github.com:PoornachandS/flask-pubsub.git'
+    repoURL: 'git@github.com:PoornachandS/pubsub-firestore.git'
     targetRevision: HEAD
     path: manifest
   destination:
