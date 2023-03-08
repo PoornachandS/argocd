@@ -6,7 +6,7 @@ on:
       - '*'
 
 jobs:
-  build-test-deploy:
+  apply-argo-files:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -27,11 +27,19 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
 
-      - id: get-gke-credentials
-        uses: google-github-actions/get-gke-credentials@v0.4.0
-        with:
-          cluster_name: app-cluster
-          location: us-central1
+      - id: bastion-host
+        run: |
+          gcloud compute ssh --zone "us-central1-a" "app-cluster-bastion"  --project "silver-bird-378013"
+          echo "list-files"
+          ls
+          CLEAN_REF=${GITHUB_REF#refs/tags/}
+          CLEAN_REF=${CLEAN_REF#refs/heads/}
 
-      - id: run-argocd
-        run: kubectl apply -f ./argo-cd-appconfig/dev/
+          if [ "${CLEAN_REF}" == "main" ]; then
+            git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
+            git config --global user.email "${GITHUB_ACTOR}@ci"
+            git config --global user.name "${GITHUB_ACTOR}"
+
+            git checkout main
+            git pull github mainn
+          fi
