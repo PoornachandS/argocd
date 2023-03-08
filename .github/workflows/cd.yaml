@@ -41,5 +41,7 @@ jobs:
             git config --global user.name "${GITHUB_ACTOR}"
 
             git checkout main
-            git pull github mainn
+            git pull github main
+            gcloud container clusters get-credentials app-cluster --region us-central1 --project silver-bird-378013
+            kubectl apply -f ./argo-cd-appconfig/dev/
           fi
