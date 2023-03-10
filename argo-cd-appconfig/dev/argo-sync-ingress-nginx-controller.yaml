@@ -10,8 +10,8 @@ spec:
   source:
     repoURL: 'https://kubernetes.github.io/ingress-nginx'
     targetRevision: 4.4.2
-      helm:
-    releaseName: ingress-nginx
+    helm:
+      releaseName: ingress-nginx
     chart: ingress-nginx
   destination:
     server: https://kubernetes.default.svc
