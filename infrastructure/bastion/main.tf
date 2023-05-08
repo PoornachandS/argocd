@@ -4,7 +4,7 @@ locals {
 
 // Dedicated service account for the Bastion instance.
 resource "google_service_account" "bastion" {
-  account_id   = format("%s-bastion-sa", var.bastion_name)
+  account_id   = "ps-bastion-sa"
   display_name = "GKE Bastion Service Account"
 }
 

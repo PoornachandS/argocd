@@ -1,12 +1,12 @@
 resource "google_pubsub_topic" "flask" {
-  name = "flask"
+  name = "poornachand-sounderrajan-flask"
   project = var.project_id
   message_retention_duration = "86600s"
 }
 
-resource "google_pubsub_subscription" "flaskl" {
+resource "google_pubsub_subscription" "flask" {
   project = var.project_id
-  name    = "pubsub-subscription"
+  name    = "poornachand-sounderrajan-pubsub-subscription"
   topic   = google_pubsub_topic.flask.name
 }
 

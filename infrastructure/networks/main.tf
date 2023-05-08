@@ -1,5 +1,5 @@
 locals {
-  network_name                   = "kubernetes-cluster"
+  network_name                   = "poornachand-sounderrajan-kubernetes-cluster"
   subnet_name                    = "${google_compute_network.vpc.name}--subnet"
   cluster_master_ip_cidr_range   = "10.100.100.0/28"
   cluster_pods_ip_cidr_range     = "cluster-pods-ip"
@@ -29,7 +29,7 @@ resource "google_compute_subnetwork" "subnet" {
 }
 
 resource "google_compute_route" "egress_internet" {
-  name             = "egress-internet"
+  name             = "poornachand-sounderrajan-egress-internet"
   dest_range       = "0.0.0.0/0"
   network          = google_compute_network.vpc.name
   next_hop_gateway = "default-internet-gateway"
@@ -60,9 +60,9 @@ resource "google_compute_router_nat" "nat_router" {
 }
 
 resource "google_compute_global_address" "ingress_ip" {
-  name = "flask"
+  name = "poornachand-sounderrajan-flask"
 }
 
 resource "google_compute_global_address" "argo_ip" {
-  name = "argo"
+  name = "poornachand-sounderrajan-argo"
 }

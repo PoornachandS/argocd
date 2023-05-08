@@ -18,11 +18,12 @@ variable "cluster_node_zones" {
   description = "The zones where Kubernetes cluster worker nodes should be located"
 }
 
-
+/*
 variable "service_account" {
   type = string
   description = "The GCP service account"
 }
+*/
 
 variable "workload_manager_iam_roles" {
   type = any

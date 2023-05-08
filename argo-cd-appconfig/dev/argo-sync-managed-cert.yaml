@@ -1,20 +1,20 @@
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
-  name: managed-cert
-  namespace: flask-pub-sub
+  name: managed-cert-argo
+  namespace: argocd
 spec:
   domains:
-    - poorna.braveokafor.com
-    - www.poorna.braveokafor.com
+    - argo.poorna.braveokafor.com
+    - www.argo.poorna.braveokafor.com
 
 ---
 
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
 metadata:
-  name: https-redirect
-  namespace: flask-pub-sub
+  name: https-redirect-argo
+  namespace: argocd
 spec:
   redirectToHttps:
     enabled: true

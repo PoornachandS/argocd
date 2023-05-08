@@ -66,9 +66,25 @@ module "google_networks" {
   ]
 }
 
+// service account for iac
+resource "google_service_account" "iac_sa" {
+  account_id   = "iac-196"
+  display_name = "GKE Bastion Service Account"
+}
+
+resource "google_project_iam_member" "iac-sa-bindng" {
+  for_each = toset([
+    "roles/artifactregistry.writer",
+    "roles/iam.workloadIdentityUser",
+  ])
+  project = var.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.iac_sa.email}"
+}
+
 // Dedicated service account for the Bastion instance.
 resource "google_service_account" "gke_sa" {
-  account_id   = "gke-sa"
+  account_id   = "ps-gke-sa"
   display_name = "GKE Bastion Service Account"
 }
 
@@ -88,7 +104,7 @@ resource "google_project_iam_member" "gke-sa-bindng" {
 module "gke" {
   source                     = "terraform-google-modules/kubernetes-engine/google//modules/beta-autopilot-private-cluster"
   project_id                 = var.project_id
-  name                       = "app-cluster"
+  name                       = "poornachand-sounderrajan-app-cluster"
   region                     = var.region
   zones                      = var.cluster_node_zones
   network                    = module.google_networks.network.name
@@ -124,7 +140,7 @@ module "my-app-workload-identity" {
 
 resource "google_service_account" "workload_manager_sa" {
   project = var.project_id
-  account_id   = "flask-pub-sub"
+  account_id   = "ps-flask-pub-sub"
   display_name = "Manager Service Account (GKE Workload Identity)."
 }
 
@@ -139,7 +155,7 @@ resource "google_project_iam_member" "workload_manager_sa" {
 resource "google_service_account_iam_member" "workload-manager-iam" {
   service_account_id = google_service_account.workload_manager_sa.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "serviceAccount:${var.project_id}.svc.id.goog[flask-pub-sub/flask-pub-sub-svc]"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[ps-flask-pub-sub/flask-pub-sub-svc]"
 }
 
 /*
@@ -162,7 +178,7 @@ module "bastion" {
   project_id   = var.project_id
   region       = var.region
   zone         = var.main_zone
-  bastion_name = "app-cluster"
+  bastion_name = "poornachand-sounderrajan"
   network_name = module.google_networks.network.name
   subnet_name  = module.google_networks.subnet.name
   depends_on = [
