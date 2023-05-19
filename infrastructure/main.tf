@@ -43,6 +43,13 @@ provider "kubernetes" {
 }
 */
 
+resource "google_artifact_registry_repository" "flask-repo" {
+  location      = "europe-west1"
+  repository_id = "poornachand-sounderrajan-flask"
+  description   = "docker repository for flask app"
+  format        = "DOCKER"
+}
+
 resource "google_project_service" "project_service" {
     for_each = toset([
         "iap.googleapis.com",
@@ -155,7 +162,28 @@ resource "google_project_iam_member" "workload_manager_sa" {
 resource "google_service_account_iam_member" "workload-manager-iam" {
   service_account_id = google_service_account.workload_manager_sa.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "serviceAccount:${var.project_id}.svc.id.goog[ps-flask-pub-sub/flask-pub-sub-svc]"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[flask-pub-sub/flask-pub-sub-svc]"
+}
+
+# API Server
+resource "google_service_account" "workload_manager_sa_api" {
+  project = var.project_id
+  account_id   = "ps-api-server"
+  display_name = "Manager Service Account for API Server (GKE Workload Identity)."
+}
+
+resource "google_project_iam_member" "workload_manager_sa_api" {
+  for_each = toset(var.workload_manager_iam_roles)
+  project  = var.project_id
+  role   = each.value
+  member = "serviceAccount:${google_service_account.workload_manager_sa_api.email}"
+}
+
+# Allow Qpod manager [GKE Workload Identity] to use workload manager SA
+resource "google_service_account_iam_member" "workload-manager-iam-api" {
+  service_account_id = google_service_account.workload_manager_sa_api.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[api-server/api-server-svc]"
 }
 
 /*

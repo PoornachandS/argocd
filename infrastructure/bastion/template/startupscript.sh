@@ -26,7 +26,7 @@ curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack
 # ln -sf /opt/kubectx/completion/kubectx.bash /etc/bash_completion.d/kubectx
 
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
-gcloud container clusters get-credentials app-cluster --zone=us-central1
+gcloud container clusters get-credentials poornachand-sounderrajan-app-cluster --region europe-west1
 
 # #kubec 
 # 1. Install Argo CD¶

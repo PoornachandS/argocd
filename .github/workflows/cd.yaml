@@ -29,7 +29,7 @@ jobs:
 
       - id: bastion-host
         run: |
-          gcloud compute ssh --zone "us-central1-a" "app-cluster-bastion"  --project "silver-bird-378013"
+          gcloud compute ssh --zone "europe-west1-c" "poornachand-sounderrajan-bastion" --project "pacific-chalice-332909"
           echo "list-files"
           ls
           CLEAN_REF=${GITHUB_REF#refs/tags/}
@@ -43,6 +43,6 @@ jobs:
             git checkout main
             git pull github main
             gcloud components install gke-gcloud-auth-plugin
-            gcloud container clusters get-credentials app-cluster --region us-central1 --project silver-bird-378013
+            gcloud container clusters get-credentials poornachand-sounderrajan-app-cluster --region europe-west1 --project pacific-chalice-332909
             kubectl apply -f ./argo-cd-appconfig/dev/
           fi

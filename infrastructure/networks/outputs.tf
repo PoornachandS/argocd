@@ -23,6 +23,7 @@ output "cluster_services_ip_cidr_range" {
   description = "The CIDR range to use for Kubernetes cluster services"
 }
 
+
 output "ingress_lb_ip" {
   description = "IP of the ingress load balancer"
   value       = google_compute_global_address.ingress_ip.address
@@ -32,3 +33,4 @@ output "argo_cd_ip" {
   description = "IP of the ingress load balancer"
   value       = google_compute_global_address.argo_ip.address
 }
+
