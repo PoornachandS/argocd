@@ -9,13 +9,9 @@ metadata:
     networking.gke.io/v1beta1.FrontendConfig: https-redirect-argo
     kubernetes.io/ingress.class: "gce"
 spec:
-  rules:
-  - http:
-      paths:
-      - pathType: Prefix
-        path: /
-        backend:
-          service:
-            name: argocd-server
-            port:
-              name: http
+  defaultBackend:
+    service:
+      name: argocd-server
+      port:
+        number: 80
+
