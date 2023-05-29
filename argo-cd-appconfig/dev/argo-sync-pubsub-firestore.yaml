@@ -13,7 +13,7 @@ spec:
     path: manifest
   destination:
     server: https://kubernetes.default.svc
-    namespace: flask-pub-sub
+    namespace: pubsub-firestore
   syncPolicy:
     automated:
       selfHeal: true

@@ -186,6 +186,28 @@ resource "google_service_account_iam_member" "workload-manager-iam-api" {
   member             = "serviceAccount:${var.project_id}.svc.id.goog[api-server/api-server-svc]"
 }
 
+
+# Database Server
+resource "google_service_account" "workload_manager_sa_db" {
+  project = var.project_id
+  account_id   = "ps-pubsub-firestore"
+  display_name = "Manager Service Account for DB Server (GKE Workload Identity)."
+}
+
+resource "google_project_iam_member" "workload_manager_sa_db" {
+  for_each = toset(var.workload_manager_iam_roles)
+  project  = var.project_id
+  role   = each.value
+  member = "serviceAccount:${google_service_account.workload_manager_sa_db.email}"
+}
+
+# Allow Qpod manager [GKE Workload Identity] to use workload manager SA
+resource "google_service_account_iam_member" "workload-manager-iam-db" {
+  service_account_id = google_service_account.workload_manager_sa_db.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[pubsub-firestore/pubsub-firestore-svc]"
+}
+
 /*
 resource "kubectl_manifest" "workload_manager_sa" {
   yaml_body = <<-EOF
