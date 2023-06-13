@@ -13,7 +13,7 @@ spec:
     path: apk-cluster/strimzi-apk-cluster
   destination:
     name: https://kubernetes.default.svc
-    namespace: stimzi
+    namespace: strimzi
   syncPolicy:
     automated:
       prune: true
