@@ -12,7 +12,7 @@ spec:
     targetRevision: HEAD
     path: apk-cluster/topics
   destination:
-    name: https://kubernetes.default.svc
+    server: 'https://kubernetes.default.svc'
     namespace: strimzi
   syncPolicy:
     automated:
